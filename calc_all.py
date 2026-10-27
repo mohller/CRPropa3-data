@@ -189,24 +189,26 @@ def photopion_production(fields: list):
     print("#"*50+"\n")
 
 def empirical_photopion():
-    """Generates the three field-independent tables for PhotoPionProductionEmpirical.
+    """Copies the three field-independent tables for PhotoPionProductionEmpirical.
 
     Unlike PhotoPionProduction, these tables are independent of the photon field:
     the module builds the interaction rate at construction from the photon field itself.
-    See DATA_GENERATION.txt and dataGeneration/PhotoPionProductionEmpirical/export_tables.py.
+    The tables are exported from AstroPhoMes, see tables/PhotoPionProductionEmpirical/README.txt
+    and DATA_GENERATION.txt.
     """
-    import subprocess
-    import sys as _sys
+    import shutil
 
     print("#"*50)
-    print("Generate PhotoPionProductionEmpirical tables.\n")
+    print("Copy PhotoPionProductionEmpirical tables.\n")
     t1 = time.time()
-    script = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "dataGeneration/PhotoPionProductionEmpirical/export_tables.py")
-    subprocess.run([_sys.executable, script,
-                    "--out", "data/PhotoPionProductionEmpirical"], check=True)
+    cdir = os.path.dirname(os.path.abspath(__file__))
+    sdir = os.path.join(cdir, "tables/PhotoPionProductionEmpirical")
+    ddir = os.path.join(cdir, "data/PhotoPionProductionEmpirical")
+    os.makedirs(ddir, exist_ok=True)
+    for fname in ["basis.txt", "redistribution.txt", "fragments.txt"]:
+        shutil.copy(os.path.join(sdir, fname), ddir)
     t2 = time.time()
-    print("\nEmpirical photopion tables generated in {} seconds.".format(round(t2-t1, 2)))
+    print("\nEmpirical photopion tables copied in {} seconds.".format(round(t2-t1, 2)))
     print("#"*50+"\n")
 
 def synchrotron():
